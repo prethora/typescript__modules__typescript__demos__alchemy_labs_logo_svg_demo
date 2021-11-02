@@ -1,0 +1,34 @@
+#!/bin/bash
+
+CURRENT_SCRIPT_DIR_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+PROJECT_DIR_PATH="$(cd "$CURRENT_SCRIPT_DIR_PATH/.." && pwd)"
+source "$CURRENT_SCRIPT_DIR_PATH/lib/setup.bash"
+source "$CURRENT_SCRIPT_DIR_PATH/lib/commons.bash"
+source "$CURRENT_SCRIPT_DIR_PATH/lib/git.bash"
+cd "$PROJECT_DIR_PATH"
+
+PACKAGEJSON_PATH="./package.json"
+README_PATH="./README.md"
+
+_processHelp "$@"
+
+YES=0
+_loadArgs "$@"
+
+NAME=""
+DESCRIPTION=""
+
+REPO_EXISTS=0
+
+if ! _isCustomizable; then
+    echo "error: at least some template tags not found, this project is not customizable"
+    exit 1 
+fi
+
+_readName
+_readDescription
+
+_replaceTags
+_manageRepo1
+_npmInstall
+_manageRepo2

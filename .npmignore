@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dev-bin/
+play/
+webpack.config.js
+tsconfig.json
+.github/
+.vscode/
+src/types.d.ts
+**/*.scss.d.ts

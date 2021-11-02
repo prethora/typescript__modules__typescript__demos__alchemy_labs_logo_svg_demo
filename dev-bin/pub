@@ -1,0 +1,32 @@
+#!/bin/bash
+
+CURRENT_SCRIPT_DIR_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+PROJECT_DIR_PATH="$(cd "$CURRENT_SCRIPT_DIR_PATH/.." && pwd)"
+source "$CURRENT_SCRIPT_DIR_PATH/lib/pub.bash"
+source "$CURRENT_SCRIPT_DIR_PATH/lib/commons.bash"
+source "$CURRENT_SCRIPT_DIR_PATH/lib/git.bash"
+cd "$PROJECT_DIR_PATH"
+
+_processHelp "$@"
+
+YES=0
+_loadArgs "$@"
+
+validatePublishable
+validateVersion
+
+VERSION="$(getPackageVersion)"
+
+if [[ "$YES" == 1 ]] || confirm "Are you sure you want to publish version '$VERSION'?"; then
+    [[ "$YES" != 1 ]] && echo ""
+
+    printAction "git tag -a \"v$VERSION\" -m \"release $VERSION\""
+    git tag -a "v$VERSION" -m "release $VERSION"
+    [[ "$?" != 0 ]] && echo "fatal: \`git tag\` exited with code $?" && exit 1
+
+    printAction "git push -u origin v$VERSION"
+    git push -u origin v$VERSION
+    [[ "$?" != 0 ]] && echo "fatal: \`git push\` exited with code $?" && exit 1
+
+    echo
+fi
