@@ -1,6 +1,7 @@
 declare namespace AppScssNamespace {
   export interface IAppScss {
-    hello: string;
+    canvas: string;
+    logo: string;
   }
 }
 
